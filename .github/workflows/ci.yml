@@ -5,7 +5,7 @@ on:
     branches:
       - "main"
 jobs:
-  flakehub-publish:
+  ci:
     runs-on: "ubuntu-latest"
     permissions:
       id-token: "write"
