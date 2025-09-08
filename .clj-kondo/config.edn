@@ -1,5 +1,6 @@
 {:lint-as {datahike.db/defrecord-updatable clojure.core/deftype
            datahike.lru/defcache           clojure.core/deftype
+           sqlite4clj.core/with-write-tx   clojure.core/with-open
            datalog.parser.type/deftrecord  clojure.core/defrecord}
  :linters {;; For some reason not detected as resolved
            :unresolved-var {:exclude [babashka.fs
