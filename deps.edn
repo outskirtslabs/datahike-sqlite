@@ -1,7 +1,8 @@
 {:paths   ["src"]
  :deps    {org.clojure/clojure     {:mvn/version "1.12.1"}
            andersmurphy/sqlite4clj {:git/url "https://github.com/andersmurphy/sqlite4clj"
-                                    :git/sha "37fc2987569b54c85312f1a3ed65823e95d02104"}}
+                                    :git/sha "37fc2987569b54c85312f1a3ed65823e95d02104"
+                                    #_#_:local/root "../sqlite4clj"}}
  :aliases {:dev  {:extra-deps {criterium/criterium        {:mvn/version "0.4.6"}
                                io.replikativ/superv.async {:mvn/version "0.3.48" :exclusions [org.clojure/clojurescript]}
                                io.replikativ/datahike     {:mvn/version "0.6.1601" :exclusions [org.clojure/clojurescript]}
