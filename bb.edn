@@ -17,4 +17,4 @@
                                                   (str " --lint " (first *command-line-args*))
                                                   " --lint src test")))
                   jar               (clojure "-T:build jar")
-                  ci                {:depends [prep test lint fmt.check jar]}}}
+                  ci                {:depends [prep lint.copy-configs test lint fmt.check jar]}}}
