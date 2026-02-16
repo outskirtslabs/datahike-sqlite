@@ -1,0 +1,395 @@
+= datahike-sqlite.konserve
+
+[#default-table]
+== default-table
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L18-L18[source,window=_blank]
+
+'''
+
+[#-STAR-batch-insert-strategy-STAR-]
+== *batch-insert-strategy*
+
+
+DO NOT USE! For testing/dev only!
+Strategy for batch inserts: :sequential, :multi-row
+ :sequential - Execute individual INSERT statements for each key-value pair
+ :multi-row - Use multi-row INSERT VALUES syntax
+Preliminary testing shows that :sequential is always faster than :multi-row
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L20-L26[source,window=_blank]
+
+'''
+
+[#with-write-tx]
+== with-write-tx
+
+[source,clojure]
+----
+(with-write-tx db f)
+----
+
+Wrapper around the with-write-tx macro, for use in situations where we cannot use macros directly.
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L28-L32[source,window=_blank]
+
+'''
+
+[#init-db]
+== init-db
+
+[source,clojure]
+----
+(init-db db-spec)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L34-L40[source,window=_blank]
+
+'''
+
+[#create-statement]
+== create-statement
+
+[source,clojure]
+----
+(create-statement table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L42-L43[source,window=_blank]
+
+'''
+
+[#upsert-statement]
+== upsert-statement
+
+[source,clojure]
+----
+(upsert-statement table id header meta value)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L45-L49[source,window=_blank]
+
+'''
+
+[#select-exists-statement]
+== select-exists-statement
+
+[source,clojure]
+----
+(select-exists-statement table id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L51-L52[source,window=_blank]
+
+'''
+
+[#delete-row-statement]
+== delete-row-statement
+
+[source,clojure]
+----
+(delete-row-statement table store-key)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L54-L55[source,window=_blank]
+
+'''
+
+[#select-row-statement]
+== select-row-statement
+
+[source,clojure]
+----
+(select-row-statement table id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L57-L58[source,window=_blank]
+
+'''
+
+[#select-table-exists-statement]
+== select-table-exists-statement
+
+[source,clojure]
+----
+(select-table-exists-statement table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L60-L61[source,window=_blank]
+
+'''
+
+[#select-all-ids-statement]
+== select-all-ids-statement
+
+[source,clojure]
+----
+(select-all-ids-statement table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L63-L64[source,window=_blank]
+
+'''
+
+[#update-id-statement]
+== update-id-statement
+
+[source,clojure]
+----
+(update-id-statement table from to)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L66-L67[source,window=_blank]
+
+'''
+
+[#multi-insert-statement]
+== multi-insert-statement
+
+[source,clojure]
+----
+(multi-insert-statement table batch-size)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L69-L77[source,window=_blank]
+
+'''
+
+[#copy-row-statement]
+== copy-row-statement
+
+[source,clojure]
+----
+(copy-row-statement table to from)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L79-L83[source,window=_blank]
+
+'''
+
+[#delete-store-statement]
+== delete-store-statement
+
+[source,clojure]
+----
+(delete-store-statement table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L85-L86[source,window=_blank]
+
+'''
+
+[#change-row-id]
+== change-row-id
+
+[source,clojure]
+----
+(change-row-id db table from to)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L88-L92[source,window=_blank]
+
+'''
+
+[#read-all]
+== read-all
+
+[source,clojure]
+----
+(read-all db table id)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L94-L101[source,window=_blank]
+
+'''
+
+[#SQLiteRow]
+== SQLiteRow
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L108-L150[source,window=_blank]
+
+'''
+
+[#--GT-SQLiteRow]
+== ->SQLiteRow
+
+[source,clojure]
+----
+(->SQLiteRow db key data cache)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L108-L150[source,window=_blank]
+
+'''
+
+[#map--GT-SQLiteRow]
+== map->SQLiteRow
+
+[source,clojure]
+----
+(map->SQLiteRow m)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L108-L150[source,window=_blank]
+
+'''
+
+[#SQLiteTable]
+== SQLiteTable
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L189-L245[source,window=_blank]
+
+'''
+
+[#--GT-SQLiteTable]
+== ->SQLiteTable
+
+[source,clojure]
+----
+(->SQLiteTable db-spec db table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L189-L245[source,window=_blank]
+
+'''
+
+[#map--GT-SQLiteTable]
+== map->SQLiteTable
+
+[source,clojure]
+----
+(map->SQLiteTable m)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L189-L245[source,window=_blank]
+
+'''
+
+[#prepare-spec]
+== prepare-spec
+
+[source,clojure]
+----
+(prepare-spec db-spec opts-table)
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L247-L250[source,window=_blank]
+
+'''
+
+[#connect-store]
+== connect-store
+
+[source,clojure]
+----
+(connect-store db-spec & {:keys [opts] :as params})
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L252-L269[source,window=_blank]
+
+'''
+
+[#release]
+== release
+
+[source,clojure]
+----
+(release store env)
+----
+
+Closes the SQLite database connection pools.
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L271-L278[source,window=_blank]
+
+'''
+
+[#delete-store]
+== delete-store
+
+[source,clojure]
+----
+(delete-store db-spec & {:keys [table opts]})
+----
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L280-L285[source,window=_blank]

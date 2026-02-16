@@ -1,0 +1,4 @@
+.API Reference
+* datahike-sqlite
+** xref:api/datahike-sqlite-core.adoc[core]
+** xref:api/datahike-sqlite-konserve.adoc[konserve]

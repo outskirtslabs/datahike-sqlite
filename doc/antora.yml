@@ -1,0 +1,7 @@
+---
+name: datahike-sqlite
+title: Datahike SQLite
+version: next
+prerelease: true
+nav:
+  - modules/ROOT/nav.adoc

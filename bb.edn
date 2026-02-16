@@ -1,10 +1,14 @@
 {:min-bb-version "0.8.156"
+ :deps           {outskirtslabs/bb-tasks
+                  {:git/url "https://github.com/outskirtslabs/bb-tasks"
+                   :git/sha "8f38522bce745400f38456eab254977f94656651"}}
+ :pods           {clj-kondo/clj-kondo {:version "2026.01.19"}}
  :tasks          {:requires         ([babashka.fs :as fs]
                                      [clojure.string :as str]
-                                     [babashka.tasks :refer [shell]])
+                                     [babashka.tasks :refer [shell]]
+                                     [ol.bb-tasks.gen-docs :as gen-docs])
                   prep              (clojure "-Xdeps prep :aliases '[:dev :test]'")
                   test              (shell "./bin/run-integrationtests")
-                  ;;test2 (apply clojure "-M:dev:kaocha" *command-line-args*)
                   deps-tree         (clojure "-X:deps tree :aliases '[:dev]'")
                   dev               {:doc "Start a local development server" :task (clojure "-M:dev:repl/dev")}
                   fmt               (shell "cljfmt -v fix src test")
@@ -17,4 +21,6 @@
                                                   (str " --lint " (first *command-line-args*))
                                                   " --lint src test")))
                   jar               (clojure "-T:build jar")
-                  ci                {:depends [prep lint.copy-configs test lint fmt.check jar]}}}
+                  ci                {:depends [prep lint.copy-configs test lint fmt.check jar]}
+                  gen-docs          {:doc  "Generate all Antora documentation"
+                                     :task (gen-docs/generate!)}}}
