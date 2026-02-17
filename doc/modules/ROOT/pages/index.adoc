@@ -43,7 +43,7 @@ Include the library in your deps.edn:
                            :git/sha "c94e449be351b13c7b279d39ee3266cc22dd8f7d"}
 ----
 
-==== Dependencies
+=== Dependencies
 
 * The https://clojars.org/io.replikativ/datahike[io.replikativ/datahike
 dependency] must be provided by your project and this backend is
@@ -59,7 +59,7 @@ deps.edn alias.
 this argument by adding the manifest attribute
 `Enable-Native-Access: ALL-UNNAMED` to your jar.
 
-==== Example
+=== Example
 
 [source,clojure]
 ----
@@ -114,21 +114,21 @@ https://github.com/andersmurphy/sqlite4clj[`sqlite4clj.core/init-db!`].
 
 == Development
 
-==== Testing
+=== Testing
 
 [source,bash]
 ----
 bb test
 ----
 
-==== Formatting
+=== Formatting
 
 [source,shell]
 ----
 bb fmt
 ----
 
-==== Linting
+=== Linting
 
 [source,shell]
 ----
