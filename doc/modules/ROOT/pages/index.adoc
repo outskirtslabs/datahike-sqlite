@@ -1,5 +1,12 @@
 = Datahike SQLite Backend
 
+____
+SQLite storage backend for Datahike, the open datalog database.
+____
+
+image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc,link=http://docs.outskirtslabs.com/datahike-sqlite/next/]
+image:https://img.shields.io/badge/status-experimental-red.svg[status: experimental,link=http://docs.outskirtslabs.com/open-source-vital-signs#experimental]
+
 This library provides a backend for
 https://github.com/replikativ/datahike[Datahike] using
 https://www.sqlite.org[SQLite] as the backing store, with direct native
@@ -10,6 +17,8 @@ ____
 ++[++!WARNING++]++ This project is highly experimental and not
 production ready.
 ____
+
+Project status: *https://docs.outskirtslabs.com/open-source-vital-signs#experimental[Experimental]*.
 
 == Why sqlite4clj?
 
@@ -100,6 +109,12 @@ this argument by adding the manifest attribute
 
 (d/release conn)
 ----
+
+== Documentation
+
+* https://docs.outskirtslabs.com/datahike-sqlite/next/[Docs]
+* https://docs.outskirtslabs.com/datahike-sqlite/next/api[API Reference]
+* https://github.com/outskirtslabs/datahike-sqlite/issues[Support via GitHub Issues]
 
 == Configuration
 
