@@ -25,4 +25,7 @@
            :neil {:project {:name ol/datahike-sqlite
                             :license {:id "MIT"}
                             :description "SQLite storage backend for Datahike, the open datalog database"
+                            :platforms [:clj]
+                            :created "2025-04-22"
+                            :status :experimental
                             :version "0.0.1"}}}}

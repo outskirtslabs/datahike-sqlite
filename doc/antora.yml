@@ -1,6 +1,6 @@
 ---
 name: datahike-sqlite
-title: Datahike SQLite
+title: datahike-sqlite
 version: next
 prerelease: true
 nav:

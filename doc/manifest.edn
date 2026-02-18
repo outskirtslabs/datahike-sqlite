@@ -1,0 +1,18 @@
+{:manifest/version 1,
+ :project
+ {:id "datahike-sqlite",
+  :coord "ol/datahike-sqlite",
+  :description
+  "SQLite storage backend for Datahike, the open datalog database",
+  :license "MIT",
+  :platforms [:clj],
+  :status :experimental,
+  :created "2025-04-22",
+  :version "0.0.1"},
+ :docs
+ {:component "datahike-sqlite",
+  :title "datahike-sqlite",
+  :version "next",
+  :prerelease true,
+  :start-path "doc"},
+ :repo {:url "https://github.com/outskirtslabs/datahike-sqlite"}}
