@@ -4,8 +4,8 @@ ____
 SQLite storage backend for Datahike, the open datalog database.
 ____
 
-image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc,link=http://docs.outskirtslabs.com/datahike-sqlite/next/]
-image:https://img.shields.io/badge/status-experimental-red.svg[status: experimental,link=http://docs.outskirtslabs.com/open-source-vital-signs#experimental]
+image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc,link=https://docs.outskirtslabs.com/datahike-sqlite/next/]
+image:https://img.shields.io/badge/status-experimental-red.svg[status: experimental,link=https://docs.outskirtslabs.com/open-source-vital-signs#experimental]
 
 This library provides a backend for
 https://github.com/replikativ/datahike[Datahike] using
