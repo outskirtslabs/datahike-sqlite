@@ -36,13 +36,13 @@ optimizations.
 * More suitable architecture for SQLite’s single-writer, multiple-reader
 model.
 
-== Usage
+== Installation
 
 Include the library in your deps.edn:
 
 [source,clojure]
 ----
- io.replikativ/datahike   {:mvn/version "0.7.1624"} ;; Use latest version
+ io.replikativ/datahike   {:mvn/version "0.7.1624"} ;; Use latest 0.7.x version
  ramblurr/datahike-sqlite {:git/url "https://github.com/ramblurr/datahike-sqlite"
                            :git/sha "c94e449be351b13c7b279d39ee3266cc22dd8f7d"}
 ----
@@ -50,8 +50,7 @@ Include the library in your deps.edn:
 === Dependencies
 
 * The https://clojars.org/io.replikativ/datahike[io.replikativ/datahike
-dependency] must be provided by your project and this backend is
-designed to work with Datahike 0.6.x versions.
+dependency] must be provided by your project and must be 0.7.x or greater
 * https://github.com/andersmurphy/sqlite4clj[sqlite4clj] requires Java
 22 or later.
 * If you use this library as a git dependency, you will need to prepare
