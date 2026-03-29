@@ -1,0 +1,63 @@
+= datahike-sqlite.store-config
+
+[#default-table]
+== default-table
+
+
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/store_config.clj#L7-L7[source,window=_blank]
+
+'''
+
+[#derive-store-id]
+== derive-store-id
+
+
+
+
+[source,clojure]
+----
+(derive-store-id {:keys [dbname table]})
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/store_config.clj#L9-L13[source,window=_blank]
+
+'''
+
+[#store-id]
+== store-id
+
+
+
+
+[source,clojure]
+----
+(store-id store-config)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/store_config.clj#L15-L18[source,window=_blank]
+
+'''
+
+[#ensure-store-id]
+== ensure-store-id
+
+
+
+
+[source,clojure]
+----
+(ensure-store-id store-config)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/store_config.clj#L20-L24[source,window=_blank]

@@ -13,11 +13,6 @@ https://www.sqlite.org[SQLite] as the backing store, with direct native
 integration through
 https://github.com/andersmurphy/sqlite4clj[sqlite4clj].
 
-____
-++[++!WARNING++]++ This project is highly experimental and not
-production ready.
-____
-
 Project status: *https://docs.outskirtslabs.com/open-source-vital-signs#experimental[Experimental]*.
 
 == Why sqlite4clj?
@@ -47,7 +42,7 @@ Include the library in your deps.edn:
 
 [source,clojure]
 ----
- io.replikativ/datahike   {:mvn/version "0.6.1601"} ;; Use latest version
+ io.replikativ/datahike   {:mvn/version "0.7.1624"} ;; Use latest version
  ramblurr/datahike-sqlite {:git/url "https://github.com/ramblurr/datahike-sqlite"
                            :git/sha "c94e449be351b13c7b279d39ee3266cc22dd8f7d"}
 ----
@@ -78,6 +73,8 @@ this argument by adding the manifest attribute
 
 (def cfg {:store {:backend :sqlite
                   :dbname  "foobar.sqlite"
+                  ;; required by modern konserve/datahike
+                  :id #uuid "550e8400-e29b-41d4-a716-446655440000"
                   ;; see sqlite4clj.core/init-db! for the possible options
                   :sqlite-opts {:pool-size 4}}})
 
@@ -95,19 +92,19 @@ this argument by adding the manifest attribute
                    :db/valueType   :db.type/long
                    :db/cardinality :db.cardinality/one}])
 
-(d/transact conn [{:name "Mighty Teapot" :age 20}])
+(d/transact conn [{:artifact "Mighty Teapot" :level 20}])
 
 (d/q '[:find (pull ?e [*])
-       :in $ ?name
-       :where [?e :name ?name]]
+       :in $ ?artifact
+       :where [?e :artifact ?artifact]]
      @conn "Mighty Teapot")
 
+
+(d/release conn)
 
 ;; this will delete the table in the sqlite file,
 ;; but will not delete the sqlite file itself
 (d/delete-database cfg)
-
-(d/release conn)
 ----
 
 == Documentation
@@ -122,6 +119,9 @@ The value for `:store` is a configuration map. To invoke datahike-sqlite
 (this library) you must include `:backend :sqlite` in that map.
 
 You must also include `:dbname`, a path to the SQLite file.
+
+Konserve 0.9 and newer Datahike releases require a UUID under `:id`.
+Use a stable UUID literal in your store config.
 
 You can optionally include the key `:sqlite-opts` with an options map
 which will be passed to
