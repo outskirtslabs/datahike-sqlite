@@ -21,6 +21,7 @@
                                                   (str " --lint " (first *command-line-args*))
                                                   " --lint src test")))
                   jar               (clojure "-T:build jar")
+                  qa                {:depends [lint test fmt]}
                   ci                {:depends [prep lint.copy-configs test lint fmt.check jar]}
                   gen-docs          {:doc  "Generate all Antora documentation"
                                      :task (gen-docs/generate!)}}}
