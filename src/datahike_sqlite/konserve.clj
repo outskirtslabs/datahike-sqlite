@@ -171,9 +171,9 @@
   [tx table store-key-values]
   (let [exec-update (fn [[store-key data]]
                       (let [{:keys [header meta value]} data
-                            ps (upsert-statement table store-key header meta value)
-                            exec-result (d/q tx ps)]
-                        [store-key (some? exec-result)]))]
+                            ps (upsert-statement table store-key header meta value)]
+                        (d/q tx ps)
+                        [store-key true]))]
     (into {} (map exec-update store-key-values))))
 
 (defn- batch-insert-multi-row
