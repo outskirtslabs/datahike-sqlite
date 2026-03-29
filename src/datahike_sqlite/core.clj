@@ -2,43 +2,32 @@
 ;; SPDX-License-Identifier: MIT
 (ns datahike-sqlite.core
   (:require
-   [clojure.spec.alpha :as s]
-   [datahike-sqlite.konserve :as k]
-   [datahike-sqlite.store-config :as store-config]
-   [datahike.config :refer [map-from-env]]
-   [datahike.store :refer [config-spec connect-store default-config
-                           delete-store empty-store release-store
-                           store-identity]]))
+   [datahike-sqlite.konserve :as sqlite]
+   [konserve.store :as ks]
+   [konserve.utils :refer [async+sync *default-sync-translation*]]
+   [superv.async :refer [<?- go-try-]]))
 
-(defmethod store-identity :sqlite [store-config]
-  (store-config/store-id store-config))
+(defmethod ks/-create-store :sqlite
+  [config opts]
+  (sqlite/connect-store config :opts opts))
 
-(defmethod empty-store :sqlite [store-config]
-  (k/connect-store store-config))
+(defmethod ks/-connect-store :sqlite
+  [config opts]
+  (async+sync (:sync? opts) *default-sync-translation*
+              (go-try-
+               (when-not (<?- (sqlite/store-exists? config :opts opts))
+                 (throw (ex-info (str "SQLite store does not exist at dbname: " (:dbname config))
+                                 {:config config})))
+               (<?- (sqlite/connect-store config :opts opts)))))
 
-(defmethod delete-store :sqlite [store-config]
-  (k/delete-store store-config))
+(defmethod ks/-store-exists? :sqlite
+  [config opts]
+  (sqlite/store-exists? config :opts opts))
 
-(defmethod connect-store :sqlite [store-config]
-  (k/connect-store store-config))
+(defmethod ks/-delete-store :sqlite
+  [config opts]
+  (sqlite/delete-store config :opts opts))
 
-(defmethod default-config :sqlite [config]
-  (let [env-config (map-from-env :datahike-store-config {})
-        passed-config config]
-    (store-config/ensure-store-id
-     (merge env-config passed-config))))
-
-(s/def :datahike.store.sqlite/dbname string?)
-(s/def :datahike.store.sqlite/id uuid?)
-(s/def :datahike.store.sqlite/table string?)
-(s/def :datahike.store.sqlite/sqlite-opts map?)
-
-(s/def ::sqlite (s/keys :req-un [:datahike.store.sqlite/dbname]
-                        :opt-un [:datahike.store.sqlite/id
-                                 :datahike.store.sqlite/table
-                                 :datahike.store.sqlite/sqlite-opts]))
-
-(defmethod config-spec :sqlite [_] ::sqlite)
-
-(defmethod release-store :sqlite [_ store]
-  (k/release store {:sync? true}))
+(defmethod ks/-release-store :sqlite
+  [_config store opts]
+  (sqlite/release store opts))

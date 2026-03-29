@@ -328,6 +328,18 @@
         db (init-db db-spec)]
     (-delete-store (SQLiteTable. db-spec db (:table db-spec)) complete-opts)))
 
+(defn store-exists? [db-spec & {:keys [table opts]}]
+  (let [complete-opts (merge {:sync? true} opts)
+        db-spec (prepare-spec db-spec table)
+        table-name (:table db-spec)
+        db (init-db db-spec)]
+    (async+sync (:sync? complete-opts) *default-sync-translation*
+                (go-try-
+                 (try
+                   (boolean (d/q (:reader db) (select-table-exists-statement table-name)))
+                   (catch Exception _e
+                     false))))))
+
 (comment
 
   (require '[konserve.core :as k])

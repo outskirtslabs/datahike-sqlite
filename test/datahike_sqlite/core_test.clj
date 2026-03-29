@@ -7,7 +7,6 @@
    [datahike-sqlite.core]
    [datahike-sqlite.konserve :as dsk]
    [datahike.api :as d]
-   [datahike.store :as ds]
    [konserve.core :as k]
    [sqlite4clj.core :as sq]))
 
@@ -23,7 +22,8 @@
 
 (deftest ^:integration test-basic-operation
   (let [config {:store {:backend :sqlite
-                        :dbname "test-data/config-test.sqlite"}
+                        :dbname "test-data/config-test.sqlite"
+                        :id #uuid "11000000-0000-0000-0000-000000000001"}
                 :schema-flexibility :read
                 :keep-history? false}
         _ (d/delete-database config)]
@@ -43,30 +43,6 @@
       (d/delete-database config)
       (is (not (d/database-exists? config))))))
 
-(deftest ^:integration test-env
-  (let [_ (d/delete-database)]
-    (is (not (d/database-exists?)))
-    (let [_ (d/create-database)
-          conn (d/connect)]
-
-      (d/transact conn [{:db/ident :name
-                         :db/valueType :db.type/string
-                         :db/cardinality :db.cardinality/one}
-                        {:db/ident :age
-                         :db/valueType :db.type/long
-                         :db/cardinality :db.cardinality/one}])
-      (d/transact conn [{:db/id 1, :name "Ivan", :age 15}
-                        {:db/id 2, :name "Petr", :age 37}
-                        {:db/id 3, :name "Ivan", :age 37}
-                        {:db/id 4, :age 15}])
-      (is (= (d/q '[:find ?e :where [?e :name]] @conn)
-             #{[3] [2] [1]}))
-
-      (d/release conn)
-      (is (d/database-exists?))
-      (d/delete-database)
-      (is (not (d/database-exists?))))))
-
 (defn has-table? [db table-name]
   (let [tables (sq/q (:reader db) ["SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"])]
     (println "tables" tables table-name (some #(= table-name %) tables))
@@ -77,11 +53,13 @@
 
 (deftest ^:integration test-custom-table
   (let [config {:store {:backend :sqlite
-                        :dbname "test-data/config-test.sqlite"}
+                        :dbname "test-data/config-test.sqlite"
+                        :id #uuid "12000000-0000-0000-0000-000000000001"}
                 :schema-flexibility :write
                 :keep-history? false}
         config2 {:store {:backend :sqlite
                          :dbname "test-data/config-test.sqlite"
+                         :id #uuid "12000000-0000-0000-0000-000000000002"
                          :table "tea_party"}
                  :schema-flexibility :write
                  :keep-history? false}
@@ -120,21 +98,11 @@
       (is (not (d/database-exists? config)))
       (is (not (d/database-exists? config2))))))
 
-(deftest test-store-identity
-  (let [base-config {:backend :sqlite
-                     :dbname "test-data/config-test.sqlite"}
-        explicit-id #uuid "71de0715-0000-0000-0000-000000000071"]
-    (is (uuid? (ds/store-identity base-config)))
-    (is (= (ds/store-identity base-config)
-           (ds/store-identity (assoc base-config :table "konserve"))))
-    (is (not= (ds/store-identity base-config)
-              (ds/store-identity (assoc base-config :table "tea_party"))))
-    (is (= explicit-id
-           (ds/store-identity (assoc base-config :id explicit-id))))))
-
 (deftest ^:integration test-batch-writes
   (testing "PMultiWriteBackingStore batch operations"
-    (let [db-spec {:dbname "test-data/batch-test.sqlite" :dbtype "sqlite"}
+    (let [db-spec {:dbname "test-data/batch-test.sqlite"
+                   :dbtype "sqlite"
+                   :id #uuid "13000000-0000-0000-0000-000000000001"}
           _ (try (dsk/delete-store db-spec) (catch Exception _ nil))
           store (dsk/connect-store db-spec :opts {:sync? true})
           ;; Helper function to generate test data
