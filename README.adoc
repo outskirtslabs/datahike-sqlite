@@ -78,6 +78,9 @@ this argument by adding the manifest attribute
 
 (def cfg {:store {:backend :sqlite
                   :dbname  "foobar.sqlite"
+                  ;; optional, but recommended if you want to control the
+                  ;; store identity used by konserve/datahike
+                  :id #uuid "550e8400-e29b-41d4-a716-446655440000"
                   ;; see sqlite4clj.core/init-db! for the possible options
                   :sqlite-opts {:pool-size 4}}})
 
@@ -122,6 +125,11 @@ The value for `:store` is a configuration map. To invoke datahike-sqlite
 (this library) you must include `:backend :sqlite` in that map.
 
 You must also include `:dbname`, a path to the SQLite file.
+
+Konserve 0.9 requires a UUID under `:id`. If you omit it,
+datahike-sqlite derives a stable UUID from the SQLite `:dbname` and
+`:table`, but setting `:id` explicitly is recommended when you want that
+identity to be under your control.
 
 You can optionally include the key `:sqlite-opts` with an options map
 which will be passed to

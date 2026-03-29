@@ -6,7 +6,7 @@
  :aliases {:dev  {:extra-deps {criterium/criterium        {:mvn/version "0.4.6"}
                                io.replikativ/superv.async {:mvn/version "0.3.48" :exclusions [org.clojure/clojurescript]}
                                io.replikativ/datahike     {:mvn/version "0.6.1601" :exclusions [org.clojure/clojurescript]}
-                               io.replikativ/konserve     {:mvn/version "0.8.321" :exclusions [org.clojure/clojurescript org.clojars.mmb90/cljs-cache]}}
+                               org.replikativ/konserve    {:mvn/version "0.9.346" :exclusions [org.clojure/clojurescript org.clojars.mmb90/cljs-cache]}}
                   :jvm-opts   ["--enable-native-access=ALL-UNNAMED"
                                "-Djdk.attach.allowAttachSelf" ;; https://nrepl.org/nrepl/installation.html#jvmti
                                ]}

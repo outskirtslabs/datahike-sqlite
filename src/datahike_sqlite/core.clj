@@ -4,14 +4,14 @@
   (:require
    [clojure.spec.alpha :as s]
    [datahike-sqlite.konserve :as k]
+   [datahike-sqlite.store-config :as store-config]
    [datahike.config :refer [map-from-env]]
    [datahike.store :refer [config-spec connect-store default-config
                            delete-store empty-store release-store
                            store-identity]]))
 
 (defmethod store-identity :sqlite [store-config]
-  (let [{:keys [dbname table]} store-config]
-    [:sqlite dbname table]))
+  (store-config/store-id store-config))
 
 (defmethod empty-store :sqlite [store-config]
   (k/connect-store store-config))
@@ -25,14 +25,17 @@
 (defmethod default-config :sqlite [config]
   (let [env-config (map-from-env :datahike-store-config {})
         passed-config config]
-    (merge env-config passed-config)))
+    (store-config/ensure-store-id
+     (merge env-config passed-config))))
 
 (s/def :datahike.store.sqlite/dbname string?)
+(s/def :datahike.store.sqlite/id uuid?)
 (s/def :datahike.store.sqlite/table string?)
 (s/def :datahike.store.sqlite/sqlite-opts map?)
 
 (s/def ::sqlite (s/keys :req-un [:datahike.store.sqlite/dbname]
-                        :opt-un [:datahike.store.sqlite/table
+                        :opt-un [:datahike.store.sqlite/id
+                                 :datahike.store.sqlite/table
                                  :datahike.store.sqlite/sqlite-opts]))
 
 (defmethod config-spec :sqlite [_] ::sqlite)

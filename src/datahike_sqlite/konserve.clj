@@ -2,11 +2,12 @@
 ;; SPDX-License-Identifier: MIT
 (ns datahike-sqlite.konserve
   (:require
+   [datahike-sqlite.store-config :as store-config]
    [clojure.string :as str]
    [konserve.compressor :refer [null-compressor]]
    [konserve.encryptor :refer [null-encryptor]]
    [konserve.impl.defaults :refer [connect-default-store]]
-   [konserve.impl.storage-layout :refer [PBackingBlob PBackingLock PBackingStore PMultiWriteBackingStore -delete-store]]
+   [konserve.impl.storage-layout :refer [PBackingBlob PBackingLock PBackingStore PMultiReadBackingStore PMultiWriteBackingStore -delete-store]]
    [konserve.utils :refer [*default-sync-translation* async+sync]]
    [sqlite4clj.core :as d]
    [superv.async :refer [go-try-]])
@@ -57,11 +58,26 @@
 (defn select-row-statement [table id]
   [(str "SELECT id, header, meta, val FROM " table " WHERE id = ?") id])
 
+(defn select-rows-statement [table ids]
+  (let [placeholders (str/join ", " (repeat (count ids) "?"))]
+    (into [(str "SELECT id, header, meta, val FROM " table " WHERE id IN (" placeholders ")")]
+          ids)))
+
+(defn select-ids-statement [table ids]
+  (let [placeholders (str/join ", " (repeat (count ids) "?"))]
+    (into [(str "SELECT id FROM " table " WHERE id IN (" placeholders ")")]
+          ids)))
+
 (defn select-table-exists-statement [table]
   [(str "SELECT 1 FROM " table " LIMIT 1")])
 
 (defn select-all-ids-statement [table]
   [(str "SELECT id FROM " table)])
+
+(defn delete-rows-statement [table store-keys]
+  (let [placeholders (str/join ", " (repeat (count store-keys) "?"))]
+    (into [(str "DELETE FROM " table " WHERE id IN (" placeholders ")")]
+          store-keys)))
 
 (defn update-id-statement [table from to]
   [(str "UPDATE " table " SET id = ? WHERE id = ?") from to])
@@ -230,9 +246,8 @@
     (if (:sync? env) nil (go-try- nil)))
   (-keys [_ env]
     (async+sync (:sync? env) *default-sync-translation*
-                (go-try- (let [res' (d/q (:reader db)
-                                         (select-all-ids-statement table))]
-                           (map first res')))))
+                (go-try- (d/q (:reader db)
+                              (select-all-ids-statement table)))))
 
   PMultiWriteBackingStore
   (-multi-write-blobs [_ store-key-values env]
@@ -242,12 +257,41 @@
                    (fn [tx]
                      (case *batch-insert-strategy*
                        :sequential (batch-insert-sequential tx table store-key-values)
-                       :multi-row (batch-insert-multi-row tx table store-key-values))))))))
+                       :multi-row (batch-insert-multi-row tx table store-key-values)))))))
+  (-multi-delete-blobs [_ store-keys env]
+    (async+sync (:sync? env) *default-sync-translation*
+                (go-try-
+                 (if (empty? store-keys)
+                   {}
+                   (let [existing-ids (set (d/q (:reader db) (select-ids-statement table store-keys)))]
+                     (with-write-tx db
+                       (fn [tx]
+                         (d/q tx (delete-rows-statement table store-keys))
+                         (into {}
+                               (map (fn [store-key]
+                                      [store-key (contains? existing-ids store-key)]))
+                               store-keys))))))))
+
+  PMultiReadBackingStore
+  (-multi-read-blobs [this store-keys env]
+    (async+sync (:sync? env) *default-sync-translation*
+                (go-try-
+                 (if (empty? store-keys)
+                   {}
+                   (let [rows (d/q (:reader db) (select-rows-statement table store-keys))]
+                     (into {}
+                           (map (fn [[store-key header meta value]]
+                                  [store-key
+                                   (SQLiteRow. this store-key (atom {}) (atom {:header header
+                                                                               :meta meta
+                                                                               :value value}))]))
+                           rows)))))))
 
 (defn prepare-spec [db-spec opts-table]
   (-> db-spec
       (assoc :dbtype "sqlite")
-      (assoc :table (or opts-table (:table db-spec) default-table))))
+      (assoc :table (or opts-table (:table db-spec) default-table))
+      (store-config/ensure-store-id)))
 
 (defn connect-store [db-spec & {:keys [opts]
                                 :as params}]

@@ -7,6 +7,7 @@
    [datahike-sqlite.core]
    [datahike-sqlite.konserve :as dsk]
    [datahike.api :as d]
+   [datahike.store :as ds]
    [konserve.core :as k]
    [sqlite4clj.core :as sq]))
 
@@ -119,6 +120,18 @@
       (is (not (d/database-exists? config)))
       (is (not (d/database-exists? config2))))))
 
+(deftest test-store-identity
+  (let [base-config {:backend :sqlite
+                     :dbname "test-data/config-test.sqlite"}
+        explicit-id #uuid "71de0715-0000-0000-0000-000000000071"]
+    (is (uuid? (ds/store-identity base-config)))
+    (is (= (ds/store-identity base-config)
+           (ds/store-identity (assoc base-config :table "konserve"))))
+    (is (not= (ds/store-identity base-config)
+              (ds/store-identity (assoc base-config :table "tea_party"))))
+    (is (= explicit-id
+           (ds/store-identity (assoc base-config :id explicit-id))))))
+
 (deftest ^:integration test-batch-writes
   (testing "PMultiWriteBackingStore batch operations"
     (let [db-spec {:dbname "test-data/batch-test.sqlite" :dbtype "sqlite"}
@@ -139,10 +152,16 @@
                           :key2 {:data "value2"}
                           :key3 {:data "value3"}}]
           (k/multi-assoc store batch-data {:sync? true})
+          (is (= batch-data
+                 (k/multi-get store [:key1 :key2 :key3] {:sync? true})))
 
           (is (= (k/get store :key1 nil {:sync? true}) {:data "value1"}))
           (is (= (k/get store :key2 nil {:sync? true}) {:data "value2"}))
-          (is (= (k/get store :key3 nil {:sync? true}) {:data "value3"}))))
+          (is (= (k/get store :key3 nil {:sync? true}) {:data "value3"}))
+          (is (= {:key1 true :missing false}
+                 (k/multi-dissoc store [:key1 :missing] {:sync? true})))
+          (is (= {:key2 {:data "value2"} :key3 {:data "value3"}}
+                 (k/multi-get store [:key1 :key2 :key3] {:sync? true})))))
 
       (testing "Large batch operations with 500+ writes"
         (let [test-data (generate-test-data 500 100)]
