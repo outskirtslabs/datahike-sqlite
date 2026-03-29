@@ -142,3 +142,22 @@
 
       (dsk/release store {:sync? true})
       (dsk/delete-store db-spec))))
+
+(deftest ^:integration test-store-persistence-across-reconnect
+  (let [db-spec {:dbname "test-data/persistence-test.sqlite"
+                 :dbtype "sqlite"
+                 :id #uuid "15000000-0000-0000-0000-000000000001"}
+        _ (try (dsk/delete-store db-spec) (catch Exception _ nil))
+        store (dsk/connect-store db-spec :opts {:sync? true})]
+    (try
+      (k/assoc store :persistent {:message "still here"} {:sync? true})
+      (dsk/release store {:sync? true})
+
+      (let [reopened-store (dsk/connect-store db-spec :opts {:sync? true})]
+        (try
+          (is (= {:message "still here"}
+                 (k/get reopened-store :persistent nil {:sync? true})))
+          (finally
+            (dsk/release reopened-store {:sync? true}))))
+      (finally
+        (dsk/delete-store db-spec)))))
