@@ -15,7 +15,7 @@
       devShell =
         pkgs:
         let
-          javaVersion = "24";
+          javaVersion = "25";
           jdk = pkgs."jdk${javaVersion}";
           clojure = pkgs.clojure.override { inherit jdk; };
           sqlite = (
