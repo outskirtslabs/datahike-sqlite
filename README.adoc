@@ -151,5 +151,6 @@ bb lint
 
 == License: MIT License
 
-Copyright © 2025 Casey Link casey@outskirtslabs.com Distributed under
-the https://spdx.org/licenses/MIT.html[MIT].
+Copyright © 2025 Casey Link casey@outskirtslabs.com
+
+Distributed under the https://spdx.org/licenses/MIT.html[MIT], like dathike.
