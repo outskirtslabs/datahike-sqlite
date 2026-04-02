@@ -1,6 +1,7 @@
 {:paths   ["src"]
- :deps    {andersmurphy/sqlite4clj {:git/url "https://github.com/andersmurphy/sqlite4clj"
-                                    :git/sha "45b2ce9a8e2944f7b9aa0af7d69a0e2a9352aff3"}}
+ :deps    {andersmurphy/sqlite4clj {:git/url "https://github.com/ramblurr/sqlite4clj"
+                                    :git/sha "edc74075f784c890ac2a878ee7244b31f2d5881f"
+                                    #_#_:local/root "/home/ramblurr/src/github.com/andersmurphy/sqlite4clj"}}
  :aliases {:dev  {:extra-deps {criterium/criterium        {:mvn/version "0.4.6"}
                                io.replikativ/superv.async {:mvn/version "0.3.48" :exclusions [org.clojure/clojurescript]}
                                io.replikativ/datahike     {:mvn/version "0.7.1624" :exclusions [org.clojure/clojurescript]}
@@ -19,11 +20,6 @@
                                  org.xerial/sqlite-jdbc {:mvn/version "3.51.3.0"}}
                    :jvm-opts    ["--enable-native-access=ALL-UNNAMED"
                                  "-Xmx2g"]}
-
-           :format {:extra-deps {cljfmt/cljfmt {:mvn/version "0.9.2"}}
-                    :main-opts  ["-m" "cljfmt.main" "check"]}
-           :ffix   {:extra-deps {cljfmt/cljfmt {:mvn/version "0.9.2"}}
-                    :main-opts  ["-m" "cljfmt.main" "fix"]}
            :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.13"}
                           slipset/deps-deploy {:mvn/version "0.2.2"}}
                    :ns-default build}

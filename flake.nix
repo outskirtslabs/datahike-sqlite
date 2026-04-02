@@ -18,7 +18,6 @@
           javaVersion = "25";
           jdk = pkgs."jdk${javaVersion}";
           clojure = pkgs.clojure.override { inherit jdk; };
-          libraries = [ pkgs.libgcc.lib ];
         in
         {
           packages = [
@@ -30,7 +29,6 @@
             pkgs.babashka
             pkgs.git
           ];
-          env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath libraries;
         };
 
       flakelight.builtinFormatters = false;

@@ -10,7 +10,7 @@
                   prep              (clojure "-Xdeps prep :aliases '[:dev :test]'")
                   test              (shell "./bin/run-integrationtests")
                   deps-tree         (clojure "-X:deps tree :aliases '[:dev]'")
-                  dev               {:doc "Start a local development server" :task (clojure "-M:dev:repl/dev")}
+                  dev               {:doc "Start a local development server" :task (clojure "-M:dev:bench:repl/dev")}
                   fmt               (shell "cljfmt -v fix src test bench")
                   fmt.check         (shell "cljfmt -v check src test bench")
                   lint.copy-configs (let [cp (-> (shell {:out :string} "clojure -Spath -M:test:dev") :out str/trim)]

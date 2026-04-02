@@ -104,12 +104,20 @@
 
 (defn sqlite-db-spec [path]
   {:dbname path
-   :dbtype "sqlite"})
+   :dbtype "sqlite"
+   :sqlite-opts {:pragma sqlite/default-sqlite-pragmas}})
 
 (defn jdbc-store-config [path]
   {:backend :jdbc
    :dbtype "sqlite"
    :dbname path
+   :properties {:busy_timeout 5000
+                :cache_size 15625
+                :foreign_keys "OFF"
+                :journal_mode "WAL"
+                :page_size 4096
+                :synchronous "NORMAL"
+                :temp_store "MEMORY"}
    :id (UUID/randomUUID)})
 
 (defn file-store-config [path]

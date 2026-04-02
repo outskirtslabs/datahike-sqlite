@@ -2,12 +2,15 @@
 ;; SPDX-License-Identifier: MIT
 (ns datahike-sqlite.konserve
   (:require
-   [datahike-sqlite.store-config :as store-config]
    [clojure.string :as str]
+   [datahike-sqlite.store-config :as store-config]
    [konserve.compressor :refer [null-compressor]]
    [konserve.encryptor :refer [null-encryptor]]
    [konserve.impl.defaults :refer [connect-default-store]]
-   [konserve.impl.storage-layout :refer [PBackingBlob PBackingLock PBackingStore PMultiReadBackingStore PMultiWriteBackingStore -delete-store]]
+   [konserve.impl.storage-layout :refer [-delete-store PBackingBlob
+                                         PBackingLock PBackingStore
+                                         PMultiReadBackingStore
+                                         PMultiWriteBackingStore]]
    [konserve.utils :refer [*default-sync-translation* async+sync]]
    [sqlite4clj.core :as d]
    [superv.async :refer [go-try-]])
@@ -18,13 +21,15 @@
 
 (def ^:const default-table "konserve")
 
-(def ^:dynamic *batch-insert-strategy*
-  "DO NOT USE! For testing/dev only!
-  Strategy for batch inserts: :sequential, :multi-row
-   :sequential - Execute individual INSERT statements for each key-value pair
-   :multi-row - Use multi-row INSERT VALUES syntax
-  Preliminary testing shows that :sequential is always faster than :multi-row"
-  :sequential)
+(def ^:const sqlite-bulk-insert-batch-size 1000)
+(def ^:const default-sqlite-pragmas
+  {:busy_timeout 5000
+   :cache_size 15625
+   :foreign_keys false
+   :journal_mode "WAL"
+   :page_size 4096
+   :synchronous "NORMAL"
+   :temp_store "MEMORY"})
 
 (defn with-write-tx
   "Wrapper around the with-write-tx macro, for use in situations where we cannot use macros directly."
@@ -35,13 +40,13 @@
 (defn init-db [db-spec]
   (let [dbname (:dbname db-spec)
         ;; Pass through any sqlite4clj options the user provided
-        sqlite-opts (or (:sqlite-opts db-spec)
-                        {:pool-size 4})
+        sqlite-opts (-> (merge {:pool-size 4} (:sqlite-opts db-spec))
+                        (update :pragma #(merge default-sqlite-pragmas %)))
         db (d/init-db! dbname sqlite-opts)]
     db))
 
 (defn create-statement [table]
-  [(str "CREATE TABLE IF NOT EXISTS " table " (id varchar(100) primary key, header bytea, meta bytea, val bytea)")])
+  [(str "CREATE TABLE IF NOT EXISTS " table " (id TEXT PRIMARY KEY, header BLOB, meta BLOB, val BLOB)")])
 
 (defn upsert-statement [table id header meta value]
   [(str "INSERT INTO " table " (id, header, meta, val) VALUES (?, ?, ?, ?) "
@@ -165,24 +170,10 @@
     (async+sync (:sync? env) *default-sync-translation*
                 (go-try- (swap! data assoc :value blob)))))
 
-(defn- batch-insert-sequential
-  "Execute individual INSERT statements for each key-value pair.
-  Returns a map of store-key -> success/failure status."
-  [tx table store-key-values]
-  (let [exec-update (fn [[store-key data]]
-                      (let [{:keys [header meta value]} data
-                            ps (upsert-statement table store-key header meta value)]
-                        (d/q tx ps)
-                        [store-key true]))]
-    (into {} (map exec-update store-key-values))))
-
 (defn- batch-insert-multi-row
   "Execute a single INSERT statement with multiple VALUES clauses."
   [tx table store-key-values]
   (let [entries (vec store-key-values)
-        batch-size (count entries)
-        ;; Safety limit to avoid hitting SQLITE_MAX_VARIABLE_NUMBER
-        max-batch 1000
         process-batch (fn [batch]
                         (if (empty? batch)
                           {}
@@ -197,10 +188,9 @@
                                 query (into [sql] params)]
                             (d/q tx query)
                             (into {} (map (fn [[k _]] [k true]) batch)))))]
-
-    (if (<= batch-size max-batch)
-      (process-batch entries)
-      (apply merge (map process-batch (partition-all max-batch entries))))))
+    (apply merge
+           (map process-batch
+                (partition-all sqlite-bulk-insert-batch-size entries)))))
 
 (defrecord SQLiteTable [db-spec db table]
   PBackingStore
@@ -255,9 +245,7 @@
                 (go-try-
                  (with-write-tx db
                    (fn [tx]
-                     (case *batch-insert-strategy*
-                       :sequential (batch-insert-sequential tx table store-key-values)
-                       :multi-row (batch-insert-multi-row tx table store-key-values)))))))
+                     (batch-insert-multi-row tx table store-key-values))))))
   (-multi-delete-blobs [_ store-keys env]
     (async+sync (:sync? env) *default-sync-translation*
                 (go-try-
