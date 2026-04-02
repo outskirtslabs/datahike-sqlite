@@ -154,6 +154,29 @@
     (finally
       (cleanup!))))
 
+(defn bench-konserve-multi-get [layer store cleanup! kvs]
+  (try
+    (k/multi-assoc store kvs {:sync? true})
+    (let [ks (vec (keys kvs))
+          {:keys [mean-us]} (bench-and-report (str (name layer) " multi-get")
+                                              #(k/multi-get store ks {:sync? true}))]
+      (kv-row layer :multi-get (count kvs) mean-us))
+    (finally
+      (cleanup!))))
+
+(defn bench-konserve-multi-dissoc [layer store cleanup! kvs]
+  (try
+    (let [ks (vec (keys kvs))
+          {:keys [mean-us]}
+          (bench-and-report
+           (str (name layer) " multi-dissoc")
+           #(do
+              (k/multi-assoc store kvs {:sync? true})
+              (k/multi-dissoc store ks {:sync? true})))]
+      (kv-row layer :multi-dissoc (count kvs) mean-us))
+    (finally
+      (cleanup!))))
+
 (defn open-sqlite-konserve-store [path]
   (let [store (sqlite/connect-store (sqlite-db-spec path) :opts {:sync? true})]
     {:store store
@@ -195,6 +218,14 @@
   (let [{:keys [store cleanup!]} (open-sqlite-konserve-store path)]
     (bench-konserve-batch :sqlite-konserve store cleanup! kvs)))
 
+(defn bench-sqlite-konserve-multi-get [path kvs]
+  (let [{:keys [store cleanup!]} (open-sqlite-konserve-store path)]
+    (bench-konserve-multi-get :sqlite-konserve store cleanup! kvs)))
+
+(defn bench-sqlite-konserve-multi-dissoc [path kvs]
+  (let [{:keys [store cleanup!]} (open-sqlite-konserve-store path)]
+    (bench-konserve-multi-dissoc :sqlite-konserve store cleanup! kvs)))
+
 (defn bench-file-konserve-put [path kvs]
   (let [{:keys [store cleanup!]} (open-file-konserve-store path)]
     (bench-konserve-put :konserve-file store cleanup! kvs)))
@@ -214,6 +245,14 @@
 (defn bench-jdbc-konserve-batch [path kvs]
   (let [{:keys [store cleanup!]} (open-jdbc-konserve-store path)]
     (bench-konserve-batch :konserve-jdbc-sqlite store cleanup! kvs)))
+
+(defn bench-jdbc-konserve-multi-get [path kvs]
+  (let [{:keys [store cleanup!]} (open-jdbc-konserve-store path)]
+    (bench-konserve-multi-get :konserve-jdbc-sqlite store cleanup! kvs)))
+
+(defn bench-jdbc-konserve-multi-dissoc [path kvs]
+  (let [{:keys [store cleanup!]} (open-jdbc-konserve-store path)]
+    (bench-konserve-multi-dissoc :konserve-jdbc-sqlite store cleanup! kvs)))
 
 (defn bench-datalevin-put [path kvs]
   (let [kv (d/open-kv path {:mapsize 512})]
@@ -289,7 +328,8 @@
     (println (format "Mode: %s" (name mode)))
     (println "Headline overlap rows: SQLite Konserve API and Datalevin raw KV API")
     (println "Additional local reference rows: Konserve file and Konserve JDBC over SQLite")
-    (println "Note: Konserve file does not expose multi-key operations, so no file batch row is recorded")
+    (println "Note: Konserve file does not expose multi-key operations, so no file multi-key rows are recorded")
+    (println "Note: multi-dissoc rows benchmark re-populate the store inside each timed iteration")
     (println)
     (warmup!)
     (println "Running benchmarks...")
@@ -304,6 +344,10 @@
                 (bench-datalevin-get (fresh-dir (str base-path "/datalevin-get")) kvs)
                 (bench-sqlite-konserve-batch (fresh-file (str base-path "/konserve-batch.sqlite")) kvs)
                 (bench-jdbc-konserve-batch (fresh-file (str base-path "/jdbc-batch.sqlite")) kvs)
+                (bench-sqlite-konserve-multi-get (fresh-file (str base-path "/konserve-multi-get.sqlite")) kvs)
+                (bench-jdbc-konserve-multi-get (fresh-file (str base-path "/jdbc-multi-get.sqlite")) kvs)
+                (bench-sqlite-konserve-multi-dissoc (fresh-file (str base-path "/konserve-multi-dissoc.sqlite")) kvs)
+                (bench-jdbc-konserve-multi-dissoc (fresh-file (str base-path "/jdbc-multi-dissoc.sqlite")) kvs)
                 (bench-datalevin-batch (fresh-dir (str base-path "/datalevin-batch")) kvs)]
           results {:benchmark :sqlite-kv
                    :mode mode
