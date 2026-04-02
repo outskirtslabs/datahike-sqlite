@@ -254,6 +254,30 @@
   (let [{:keys [store cleanup!]} (open-jdbc-konserve-store path)]
     (bench-konserve-multi-dissoc :konserve-jdbc-sqlite store cleanup! kvs)))
 
+(defn sqlite-vs-jdbc-rows [entry-count]
+  (let [kvs (gen-test-data entry-count)
+        prefix (str base-path "/sqlite-vs-jdbc-" entry-count)]
+    [(bench-sqlite-konserve-put (fresh-file (str prefix "-sqlite-put.sqlite")) kvs)
+     (bench-jdbc-konserve-put (fresh-file (str prefix "-jdbc-put.sqlite")) kvs)
+     (bench-sqlite-konserve-get (fresh-file (str prefix "-sqlite-get.sqlite")) kvs)
+     (bench-jdbc-konserve-get (fresh-file (str prefix "-jdbc-get.sqlite")) kvs)
+     (bench-sqlite-konserve-batch (fresh-file (str prefix "-sqlite-batch.sqlite")) kvs)
+     (bench-jdbc-konserve-batch (fresh-file (str prefix "-jdbc-batch.sqlite")) kvs)
+     (bench-sqlite-konserve-multi-get (fresh-file (str prefix "-sqlite-multi-get.sqlite")) kvs)
+     (bench-jdbc-konserve-multi-get (fresh-file (str prefix "-jdbc-multi-get.sqlite")) kvs)
+     (bench-sqlite-konserve-multi-dissoc (fresh-file (str prefix "-sqlite-multi-dissoc.sqlite")) kvs)
+     (bench-jdbc-konserve-multi-dissoc (fresh-file (str prefix "-jdbc-multi-dissoc.sqlite")) kvs)]))
+
+(defn run-sqlite-vs-jdbc-stress
+  [& {:keys [sizes]
+      :or {sizes [10 100 1000 5000]}}]
+  {:benchmark :sqlite-vs-jdbc-stress
+   :sizes sizes
+   :runs (mapv (fn [entry-count]
+                 {:entries entry-count
+                  :rows (sqlite-vs-jdbc-rows entry-count)})
+               sizes)})
+
 (defn bench-datalevin-put [path kvs]
   (let [kv (d/open-kv path {:mapsize 512})]
     (try

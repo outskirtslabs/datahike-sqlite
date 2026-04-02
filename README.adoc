@@ -128,6 +128,39 @@ https://github.com/andersmurphy/sqlite4clj[`sqlite4clj.core/init-db!`].
 
 == Development
 
+=== Benchmarking
+
+The SQLite KV benchmark suite lives in
+`bench/datahike_sqlite/kv_benchmark.clj`.
+
+Run the full suite with:
+
+[source,bash]
+----
+clojure -M:dev:bench -m datahike-sqlite.kv-benchmark
+----
+
+Run a smaller smoke benchmark with:
+
+[source,bash]
+----
+clojure -M:dev:bench -m datahike-sqlite.kv-benchmark '{:mode :smoke}'
+----
+
+Run the suite at a specific entry count with:
+
+[source,bash]
+----
+clojure -M:dev:bench -m datahike-sqlite.kv-benchmark 1000
+----
+
+Write the benchmark results to a file with:
+
+[source,bash]
+----
+clojure -M:dev:bench -m datahike-sqlite.kv-benchmark '{:n 1000 :output "bench/results/sqlite-kv.txt"}'
+----
+
 === Testing
 
 [source,bash]

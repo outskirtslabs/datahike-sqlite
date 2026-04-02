@@ -9,25 +9,33 @@
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L19-L19[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L22-L22[source,window=_blank]
 
 '''
 
-[#-STAR-batch-insert-strategy-STAR-]
-== *batch-insert-strategy*
+[#sqlite-bulk-insert-batch-size]
+== sqlite-bulk-insert-batch-size
 
 
 
 
 
-DO NOT USE! For testing/dev only!
-Strategy for batch inserts: :sequential, :multi-row
- :sequential - Execute individual INSERT statements for each key-value pair
- :multi-row - Use multi-row INSERT VALUES syntax
-Preliminary testing shows that :sequential is always faster than :multi-row
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L21-L27[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L24-L24[source,window=_blank]
+
+'''
+
+[#default-sqlite-pragmas]
+== default-sqlite-pragmas
+
+
+
+
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L25-L32[source,window=_blank]
 
 '''
 
@@ -45,7 +53,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 Wrapper around the with-write-tx macro, for use in situations where we cannot use macros directly.
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L29-L33[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L34-L38[source,window=_blank]
 
 '''
 
@@ -62,7 +70,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L35-L41[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L40-L46[source,window=_blank]
 
 '''
 
@@ -79,7 +87,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L43-L44[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L48-L49[source,window=_blank]
 
 '''
 
@@ -96,7 +104,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L46-L50[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L51-L55[source,window=_blank]
 
 '''
 
@@ -113,7 +121,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L52-L53[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L57-L58[source,window=_blank]
 
 '''
 
@@ -130,7 +138,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L55-L56[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L60-L61[source,window=_blank]
 
 '''
 
@@ -147,7 +155,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L58-L59[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L63-L64[source,window=_blank]
 
 '''
 
@@ -164,7 +172,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L61-L64[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L66-L69[source,window=_blank]
 
 '''
 
@@ -181,7 +189,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L66-L69[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L71-L74[source,window=_blank]
 
 '''
 
@@ -198,7 +206,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L71-L72[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L76-L77[source,window=_blank]
 
 '''
 
@@ -215,7 +223,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L74-L75[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L79-L80[source,window=_blank]
 
 '''
 
@@ -232,7 +240,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L77-L80[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L82-L85[source,window=_blank]
 
 '''
 
@@ -249,7 +257,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L82-L83[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L87-L88[source,window=_blank]
 
 '''
 
@@ -266,7 +274,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L85-L93[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L90-L98[source,window=_blank]
 
 '''
 
@@ -283,7 +291,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L95-L99[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L100-L104[source,window=_blank]
 
 '''
 
@@ -300,7 +308,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L101-L102[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L106-L107[source,window=_blank]
 
 '''
 
@@ -317,7 +325,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L104-L108[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L109-L113[source,window=_blank]
 
 '''
 
@@ -334,7 +342,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L110-L117[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L115-L122[source,window=_blank]
 
 '''
 
@@ -351,7 +359,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L124-L166[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L129-L171[source,window=_blank]
 
 '''
 
@@ -364,7 +372,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L124-L166[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L129-L171[source,window=_blank]
 
 '''
 
@@ -381,7 +389,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L124-L166[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L129-L171[source,window=_blank]
 
 '''
 
@@ -398,7 +406,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L205-L288[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L195-L276[source,window=_blank]
 
 '''
 
@@ -411,7 +419,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L205-L288[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L195-L276[source,window=_blank]
 
 '''
 
@@ -428,7 +436,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L205-L288[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L195-L276[source,window=_blank]
 
 '''
 
@@ -445,7 +453,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L290-L294[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L278-L282[source,window=_blank]
 
 '''
 
@@ -462,7 +470,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L296-L313[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L284-L301[source,window=_blank]
 
 '''
 
@@ -480,7 +488,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 Closes the SQLite database connection pools.
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L315-L322[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L303-L310[source,window=_blank]
 
 '''
 
@@ -497,7 +505,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L324-L329[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L312-L317[source,window=_blank]
 
 '''
 
@@ -514,4 +522,4 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L331-L341[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L319-L329[source,window=_blank]
