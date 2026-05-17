@@ -1,7 +1,7 @@
 {:manifest/version 1,
  :project
  {:id "datahike-sqlite",
-  :coord "ol/datahike-sqlite",
+  :coord "com.outskirtslabs/datahike-sqlite",
   :description
   "SQLite storage backend for Datahike, the open datalog database",
   :license "MIT",
