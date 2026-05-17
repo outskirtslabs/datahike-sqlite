@@ -3,7 +3,8 @@
                                     :git/sha "2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7"
                                     :exclusions [org.suskalo/coffi]
                                     #_#_:local/root "/home/ramblurr/src/github.com/andersmurphy/sqlite4clj"}
-           org.suskalo/coffi       {:mvn/version "1.0.615"}}
+           org.suskalo/coffi       {:git/url "https://github.com/ramblurr/coffi"
+                                    :git/sha "9b05e268b915b1992bfd4175cb7c8c7c45d8973a"}}
  :aliases {:dev  {:extra-deps {criterium/criterium        {:mvn/version "0.4.6"}
                                io.replikativ/superv.async {:mvn/version "0.3.48" :exclusions [org.clojure/clojurescript]}
                                org.replikativ/datahike    {:mvn/version "0.8.1686" :exclusions [org.clojure/clojurescript]}
