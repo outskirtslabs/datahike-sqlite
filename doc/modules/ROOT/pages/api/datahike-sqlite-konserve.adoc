@@ -176,23 +176,6 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 '''
 
-[#select-ids-statement]
-== select-ids-statement
-
-
-
-
-[source,clojure]
-----
-(select-ids-statement table ids)
-----
-
-
-[.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L71-L74[source,window=_blank]
-
-'''
-
 [#select-table-exists-statement]
 == select-table-exists-statement
 
@@ -206,7 +189,7 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L76-L77[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L71-L72[source,window=_blank]
 
 '''
 
@@ -223,7 +206,24 @@ link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sql
 
 
 [.api-source]
-link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L79-L80[source,window=_blank]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L74-L75[source,window=_blank]
+
+'''
+
+[#select-ids-statement]
+== select-ids-statement
+
+
+
+
+[source,clojure]
+----
+(select-ids-statement table ids)
+----
+
+
+[.api-source]
+link:https://github.com/outskirtslabs/datahike-sqlite/blob/main/src/datahike_sqlite/konserve.clj#L77-L80[source,window=_blank]
 
 '''
 

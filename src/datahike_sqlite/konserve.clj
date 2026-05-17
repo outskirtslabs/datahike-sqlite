@@ -68,16 +68,16 @@
     (into [(str "SELECT id, header, meta, val FROM " table " WHERE id IN (" placeholders ")")]
           ids)))
 
-(defn select-ids-statement [table ids]
-  (let [placeholders (str/join ", " (repeat (count ids) "?"))]
-    (into [(str "SELECT id FROM " table " WHERE id IN (" placeholders ")")]
-          ids)))
-
 (defn select-table-exists-statement [table]
   [(str "SELECT 1 FROM " table " LIMIT 1")])
 
 (defn select-all-ids-statement [table]
   [(str "SELECT id FROM " table)])
+
+(defn select-ids-statement [table ids]
+  (let [placeholders (str/join ", " (repeat (count ids) "?"))]
+    (into [(str "SELECT id FROM " table " WHERE id IN (" placeholders ")")]
+          ids)))
 
 (defn delete-rows-statement [table store-keys]
   (let [placeholders (str/join ", " (repeat (count store-keys) "?"))]
