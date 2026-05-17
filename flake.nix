@@ -90,7 +90,7 @@
               runHook preBuild
 
               source ${clojureLocker.shellEnv}
-              export GITLIBS="${clojureLocker.homeDirectory}/.gitlibs"
+              export GITLIBS="$HOME/.gitlibs"
               export JAVA_HOME="${jdkPackage.home}"
               export JAVA_CMD="${jdkPackage}/bin/java"
               export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
