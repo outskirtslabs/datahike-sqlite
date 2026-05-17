@@ -1,28 +1,49 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.string :as str]))
 
 (def project (-> (edn/read-string (slurp "deps.edn")) :aliases :neil :project))
-(def cwd (-> (java.io.File. ".")  .getCanonicalFile .getName))
-(def rev (str/trim (b/git-process {:git-args "rev-parse HEAD"})))
 (def lib (:name project))
 (def version (:version project))
 (def license-id (-> project :license :id))
 (def license-file (or (-> project :license :file) "LICENSE"))
 (def description (:description project))
-(def repo-url-prefix (:url project (-> (b/git-process {:git-args "remote get-url origin"})
-                                       (str/trim)
-                                       (str/replace #"\.git$" ""))))
-(def scm (:scm project "git"))
+
+(defn- git-origin-url []
+  (try
+    (some-> (b/git-process {:git-args "remote get-url origin"})
+            str/trim
+            (str/replace #"\.git$" ""))
+    (catch Exception _
+      nil)))
+
+(defn- git-rev []
+  (or (some-> (System/getenv "GIT_REV")
+              str/trim
+              not-empty)
+      (some-> (b/git-process {:git-args "rev-parse HEAD"})
+              str/trim
+              not-empty)))
+
+(def rev (git-rev))
+(def repo-url-prefix (or (:url project) (git-origin-url)))
 (assert lib ":name must be set in deps.edn under the :neil alias")
 (assert version ":version must be set in deps.edn under the :neil alias")
 (assert description ":description must be set in deps.edn under the :neil alias")
 (assert license-id "[:license :id] must be set in deps.edn under the :neil alias")
+(assert rev "Either GIT_REV must be set or git rev-parse HEAD must succeed")
+(assert repo-url-prefix "Either :url must be set in deps.edn under the :neil alias or git remote origin must exist")
 (def class-dir "target/classes")
 (def basis_ (delay (b/create-basis {:project "deps.edn"})))
 (def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
+
+(defn- existing-paths [paths]
+  (->> paths
+       (filter #(.exists (io/file %)))
+       vec))
 
 (defn permalink [subpath]
   (str repo-url-prefix "/blob/" rev "/" subpath))
@@ -42,16 +63,16 @@
                 :lib lib
                 :version version
                 :basis @basis_
-                :src-dirs ["src"]
+                :src-dirs (existing-paths ["src"])
                 :pom-data [[:description description]
                            [:url repo-url-prefix]
                            [:licenses
                             [:license
                              [:name license-id]
                              [:url (permalink license-file)]]]
-                           (conj (url->scm repo-url-prefix) [:tag (str "v" version)])]})
+                           (conj (url->scm repo-url-prefix) [:tag rev])]})
 
-  (b/copy-dir {:src-dirs ["src" "resources"]
+  (b/copy-dir {:src-dirs (existing-paths ["src" "resources"])
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
           :jar-file jar-file}))
@@ -66,7 +87,7 @@
 
 (defn uber [_]
   (clean nil)
-  (b/copy-dir {:src-dirs ["src" "resources"] :target-dir class-dir})
+  (b/copy-dir {:src-dirs (existing-paths ["src" "resources"]) :target-dir class-dir})
   (b/compile-clj {:basis @basis_
                   :src-dirs ["src"]
                   :class-dir class-dir

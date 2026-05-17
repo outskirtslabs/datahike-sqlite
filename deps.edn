@@ -1,7 +1,9 @@
 {:paths   ["src"]
- :deps    {andersmurphy/sqlite4clj {:git/url "https://github.com/ramblurr/sqlite4clj"
-                                    :git/sha "edc74075f784c890ac2a878ee7244b31f2d5881f"
-                                    #_#_:local/root "/home/ramblurr/src/github.com/andersmurphy/sqlite4clj"}}
+ :deps    {andersmurphy/sqlite4clj {:git/url "https://github.com/andersmurphy/sqlite4clj"
+                                    :git/sha "2d1d8dc01d4a85b622e37dc8a6a84a48edd39fc7"
+                                    :exclusions [org.suskalo/coffi]
+                                    #_#_:local/root "/home/ramblurr/src/github.com/andersmurphy/sqlite4clj"}
+           org.suskalo/coffi       {:mvn/version "1.0.615"}}
  :aliases {:dev  {:extra-deps {criterium/criterium        {:mvn/version "0.4.6"}
                                io.replikativ/superv.async {:mvn/version "0.3.48" :exclusions [org.clojure/clojurescript]}
                                org.replikativ/datahike    {:mvn/version "0.8.1686" :exclusions [org.clojure/clojurescript]}
@@ -26,6 +28,7 @@
            :neil {:project {:name com.outskirtslabs/datahike-sqlite
                             :license {:id "MIT"}
                             :description "SQLite storage backend for Datahike, the open datalog database"
+                            :url "https://github.com/outskirtslabs/datahike-sqlite"
                             :platforms [:clj]
                             :created "2025-04-22"
                             :status :experimental
