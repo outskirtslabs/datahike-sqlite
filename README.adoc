@@ -44,7 +44,7 @@ Include the library in your deps.edn:
 ----
  org.replikativ/datahike  {:mvn/version "0.8.1686"} ;; Use latest 0.8.x version
  com.outskirtslabs/datahike-sqlite {:git/url "https://github.com/outskirtslabs/datahike-sqlite"
-                                   :git/sha "62bf6a926c214ebed89cbf253644a2b2dded9e02"}
+                                   :git/sha "5b7a49db5c5b709fbdd501f47045630454e245c4"}
 ----
 
 === Dependencies
