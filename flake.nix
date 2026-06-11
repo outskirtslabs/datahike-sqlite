@@ -7,6 +7,8 @@
     devshell.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:ramblurr/nix-devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
+    clj-helpers.url = "github:outskirtslabs/clojure-nix-locker-helpers";
+    clj-helpers.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -14,8 +16,43 @@
       self,
       devenv,
       devshell,
+      clj-helpers,
       ...
     }:
+    let
+      package =
+        pkgs:
+        clj-helpers.lib.mkCljLib {
+          inherit pkgs;
+          name = "datahike-sqlite";
+          version = "0.0.1";
+          src = ./.;
+          extraSrcExcludes = [
+            "bench/results"
+            "bench/tmp"
+            "test-data"
+          ];
+          prepAliases = [
+            "dev"
+            "test"
+          ];
+          prefetchAliases = [
+            "dev:test"
+            "dev:bench"
+          ];
+          checkCommand = ''
+            export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djna.tmpdir=$TMPDIR"
+            clj-kondo --fail-level error --lint src test bench
+            clojure -Srepro -M:dev:test
+            cljfmt -v check src test bench
+          '';
+          gitRev = clj-helpers.lib.gitRev self;
+          nativeBuildInputs = [
+            pkgs.clj-kondo
+            pkgs.cljfmt
+          ];
+        };
+    in
     devenv.lib.mkFlake ./. {
       inherit inputs;
       withOverlays = [
@@ -23,120 +60,9 @@
         devenv.overlays.default
       ];
       packages = {
-        default =
-          pkgs:
-          let
-            jdk = "jdk25";
-            jdkPackage = pkgs.${jdk};
-            clojure = pkgs.clojure.override { jdk = jdkPackage; };
-            root = toString ./.;
-            gitRev =
-              if self ? rev then
-                self.rev
-              else if self ? dirtyRev then
-                self.dirtyRev
-              else
-                "dirty";
-            projectSrc = pkgs.lib.cleanSourceWith {
-              src = ./.;
-              filter =
-                path: _type:
-                let
-                  rel = pkgs.lib.removePrefix (root + "/") (toString path);
-                  base = builtins.baseNameOf path;
-                in
-                !(
-                  base == ".git"
-                  || rel == "result"
-                  || rel == ".tmuxb_session"
-                  || rel == ".nrepl-port"
-                  || pkgs.lib.hasPrefix ".cpcache/" rel
-                  || pkgs.lib.hasPrefix ".clj-kondo/.cache/" rel
-                  || pkgs.lib.hasPrefix ".clj-kondo/imports/" rel
-                  || pkgs.lib.hasPrefix ".clj-kondo/inline-configs/" rel
-                  || pkgs.lib.hasPrefix ".direnv/" rel
-                  || pkgs.lib.hasPrefix ".lsp/" rel
-                  || pkgs.lib.hasPrefix "bench/results/" rel
-                  || pkgs.lib.hasPrefix "bench/tmp/" rel
-                  || pkgs.lib.hasPrefix "extra/" rel
-                  || pkgs.lib.hasPrefix "target/" rel
-                  || pkgs.lib.hasPrefix "test-data/" rel
-                );
-            };
-            clojureLocker = devenv.clojure.mkLockfile {
-              inherit pkgs;
-              jdk = jdkPackage;
-              src = ./.;
-              lockfile = "./deps-lock.json";
-              extraPrepInputs = [ pkgs.git ];
-            };
-          in
-          pkgs.stdenv.mkDerivation {
-            pname = "datahike-sqlite";
-            version = "0.0.1";
-            src = projectSrc;
-            nativeBuildInputs = [
-              clojure
-              pkgs.clj-kondo
-              pkgs.cljfmt
-              pkgs.coreutils
-              pkgs.findutils
-              pkgs.git
-              jdkPackage
-            ];
-            GIT_REV = gitRev;
-            JAVA_HOME = jdkPackage.home;
-            buildPhase = ''
-              runHook preBuild
-
-              source ${clojureLocker.shellEnv}
-              export GITLIBS="$HOME/.gitlibs"
-              export JAVA_HOME="${jdkPackage.home}"
-              export JAVA_CMD="${jdkPackage}/bin/java"
-              export JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -Djava.io.tmpdir=$TMPDIR -Djna.tmpdir=$TMPDIR"
-
-              clojure -Srepro -Xdeps prep :aliases '[:dev :test]'
-              clj-kondo --fail-level error --lint src test bench
-              clojure -Srepro -M:dev:test
-              cljfmt -v check src test bench
-              clojure -Srepro -T:build jar
-
-              runHook postBuild
-            '';
-            installPhase = ''
-              runHook preInstall
-
-              mkdir -p "$out"
-              cp "$(find target -type f -name '*.jar' -print | head -n 1)" "$out/"
-
-              runHook postInstall
-            '';
-          };
-
-        locker =
-          pkgs:
-          let
-            jdk = "jdk25";
-            jdkPackage = pkgs.${jdk};
-            clojure = pkgs.clojure.override { jdk = jdkPackage; };
-            clojureLocker = devenv.clojure.mkLockfile {
-              inherit pkgs;
-              jdk = jdkPackage;
-              src = ./.;
-              lockfile = "./deps-lock.json";
-              extraPrepInputs = [ pkgs.git ];
-            };
-          in
-          clojureLocker.commandLocker ''
-            export HOME="$tmp/home"
-            export GITLIBS="$tmp/home/.gitlibs"
-            unset CLJ_CACHE CLJ_CONFIG XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME
-
-            ${clojure}/bin/clojure -Srepro -Xdeps prep :aliases '[:dev :test]'
-            ${clojure}/bin/clojure -Srepro -P -M:dev:test
-            ${clojure}/bin/clojure -Srepro -P -M:dev:bench
-            ${clojure}/bin/clojure -Srepro -P -T:build jar
-          '';
+        default = package;
+        # regenerates ./deps-lock.json: `nix run .#locker`
+        locker = pkgs: (package pkgs).locker;
       };
       devShell =
         pkgs:
