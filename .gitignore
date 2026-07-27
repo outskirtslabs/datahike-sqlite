@@ -20,9 +20,5 @@ pom.xml.asc
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-extra/
 bench/tmp/
 bench/results/
-.direnv/
-prompts/
-*.md
